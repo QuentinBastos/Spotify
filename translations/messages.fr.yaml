@@ -1,0 +1,13 @@
+index:
+  welcome: Bienvenue sur la recherche de l'index
+  search: Rechercher une musique
+  description: Ici une petite description de l'index spotify
+
+song:
+  preview: Prévisualisation
+  description: Une courte présentation de la musique
+  artist: Artiste
+
+
+error:
+  not_support: Désolé, votre navigateur ne supporte pas l'audio HTML5

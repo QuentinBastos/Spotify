@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom">{{ track.name }}</h2>
+        <img src="{{ track.pictureLink }}" class="mx-auto d-block rounded" alt="{{ track.name }}" height="550">
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-centers bg-gradient fs-2 mb-3 spotify-green">
+                    <i class="fa-solid fa-headphones-simple p-2"></i>
+                </div>
+                <h3 class="fs-2 text-body-emphasis">{{ "song.preview"|trans }}</h3>
+                <p>{{ "song.description"|trans }}</p>
+                <audio controls>
+                    <source src="{{ track.previewUrl }}" type="audio/mpeg">
+                    {{ "error.not_support"|trans }}
+                </audio>
+            </div>
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-center bg-gradient fs-2 mb-3 spotify-green">
+                    <i class="fa-solid fa-star p-2"></i>
+                </div>
+                <h3 class="fs-2 text-body-emphasis">{{ "song.artist"|trans }}</h3>
+                <p><strong>Durée:</strong>
+                    {% set minutes = (track.durationMs // 60000) %}
+                    {% set seconds = ((track.durationMs % 60000) // 1000) %}
+                    {{ '%02d:%02d'|format(minutes, seconds) }}
+                </p>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+            {% if recommendations is defined and recommendations is not null %}
+            {% for recommendation in recommendations %}
+                <a href="{{ path('app_track_info', {'id': recommendation.id}) }}">
+                    <div class="card text-bg-dark p-0 m-4 w-100" style="height: 150px">
+                        <img src="{{ recommendation.pictureLink }}" class="card-img h-100 w-100" alt="...">
+                        <div class="card-img-overlay w-100">
+                            <h5 class="card-title">{{ recommendation.name }}</h5>
+                            <p><strong>Durée:</strong>
+                                {% set minutes = (recommendation.durationMs // 60000) %}
+                                {% set seconds = ((recommendation.durationMs % 60000) // 1000) %}
+                                {{ '%02d:%02d'|format(minutes, seconds) }}
+                            </p>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+                {% else %}
+                <p>Aucune recommendation pour cette musique ! ?</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
