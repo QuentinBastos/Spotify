@@ -2,6 +2,7 @@ button:
   see: Voir
   register: S'inscrire
   sign_in: Se connecter
+  no_connected: Non connecté
 
 track:
   welcome: Bienvenue sur la recherche de musique

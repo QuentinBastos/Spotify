@@ -17,10 +17,10 @@
         <img src="{{ asset('img/spotify_logo.webp') }}" alt="" width="330" height="280">
         <h1 class="h3 mb-3 fw-normal">{{ "login.login"|trans }}</h1>
 
-        <form method="post">
+        <form action="{{ path('app_login') }}" method="post">
             <div class="mb-3">
                 <div class="d-flex flex-column-reverse">
-                    <input type="email" value="{{ last_username }}" name="_username" id="floatingInput" class="form-control" placeholder="name@example.com" autocomplete="email" required autofocus>
+                    <input type="text" value="{{ last_username }}" name="_username" id="floatingInput" class="form-control" placeholder="name@example.com"  required autofocus>
                     <label for="floatingInput">{{ "login.email"|trans }}</label>
                 </div>
             </div>
