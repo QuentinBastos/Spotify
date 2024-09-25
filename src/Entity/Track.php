@@ -2,12 +2,16 @@
 
 namespace App\Entity;
 
+use App\Repository\TrackRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity]
+#[ORM\Entity(repositoryClass: TrackRepository::class)]
 #[ORM\Table(name: 'track')]
 class Track
 {
+    #[ORM\Id]
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $id;
     #[ORM\Column(type: 'integer', length: 255)]
     private int $discNumber;
 
@@ -25,9 +29,6 @@ class Track
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $href;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private string $id;
 
     #[ORM\Column(type: 'boolean', nullable: true)]
     private ?bool $isLocal;
