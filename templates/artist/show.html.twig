@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container px-4 py-5" id="featured-3">
+        <h2 class="pb-2 border-bottom">{{ artist.name }}</h2>
+        <div class="d-flex justify-content-center">
+            {% if artist.images[0] is defined and artist.images[0] is not null %}
+                <img src="{{ artist.images[0].url }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
+            {% elseif artist.images[1] is defined and artist.images[1] is not null %}
+                <img src="{{ artist.images[1].url }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
+            {% elseif artist.images[2] is defined and artist.images[2] is not null %}
+                <img src="{{ artist.images[2].url }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
+            {% else %}
+                <img src="{{ asset('img/spotify_logo.webp') }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
+            {% endif %}
+        </div>
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-centers bg-gradient fs-2 mb-3 spotify-green">
+                    <i class="fa-solid fa-headphones-simple p-2"></i>
+                </div>
+                <h3 class="fs-2 text-body-emphasis">{{ "artist.type"|trans }}</h3>
+                {% for genre in artist.genres %}
+                    {{ genre }}
+                    <br>
+                {% endfor %}
+            </div>
+            <div class="feature col">
+                <div class="feature-icon d-inline-flex align-items-center justify-content-centers bg-gradient fs-2 mb-3 spotify-green">
+                    <i class="fa fa-user p-2"></i>
+                </div>
+                <h3 class="fs-2 text-body-emphasis">{{ "artist.popularity"|trans }}</h3>
+                <p>{{ "artist.follow_by"|trans({'%count%': artist.followersTotal|number_format(0, '.', ' ')}) }}</p>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-center">
+          <!-- TODO recommended song for this artists ... -->
+        </div>
+    </div>
+{% endblock %}

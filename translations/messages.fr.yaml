@@ -1,13 +1,54 @@
-index:
-  welcome: Bienvenue sur la recherche de l'index
-  search: Rechercher une musique
-  description: Ici une petite description de l'index spotify
+button:
+  see: Voir
 
-song:
+track:
+  welcome: Bienvenue sur la recherche de musique
+  search: Rechercher une musique
+  description_search: Ici une petite description de l'index spotify
   preview: Prévisualisation
   description: Une courte présentation de la musique
   artist: Artiste
+  info: Voir
+
+artist:
+  welcome: Bienvenue sur la recherche de l'artiste
+  search: Rechercher un artiste
+  description_search: Ici une petite description de l'index spotify
+  preview: Prévisualisation
+  description: Une courte présentation de l'artiste
+  album: Album
+  not_found: Aucun artiste trouvé
+  follow_by: Suivi par %count% personnes
+  popularity: Popularité de l'artiste
+  type: Type de musique
+
+recommended:
+  welcome: Bienvenue sur les titres recommandés
+  description: Ici une petite description des titres recommandés
+  info: Voir
+
 
 
 error:
   not_support: Désolé, votre navigateur ne supporte pas l'audio HTML5
+
+sidebar:
+  artist: Artiste
+  album: Album
+  music: Musique
+  recommended: Titres recommandés
+  account: Compte
+  logout: Déconnexion
+  login: Connexion
+  register: Inscription
+  settings: Paramètres
+
+search:
+  artist:
+    label: Recherche d'artiste
+    placeholder: Rechercher un artiste
+    button: Rechercher
+  track:
+    label: Recherche de musique
+    placeholder: Rechercher une musique
+    button: Rechercher

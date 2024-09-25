@@ -29,3 +29,12 @@
   background-color: #1DB954 !important;
   border-color: #1DB954 !important;
 }
+
+.link-sidebar {
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+}
+
+.link-sidebar:hover {
+    color: #1DB954 !important;
+}

@@ -36,10 +36,14 @@ class TrackController extends AbstractController
     #[Route('/tracks', name: 'app_tracks')]
     public function index(Request $request): Response
     {
-        $form = $this->createForm(SearchType::class);
+        $isSubmitted = false;
+        $form = $this->createForm(SearchType::class, null, [
+            'music' => true,
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $isSubmitted = true;
             $searchQuery = $form->get('search')->getData();
 
             $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search', [
@@ -52,7 +56,6 @@ class TrackController extends AbstractController
                     'locale' => 'fr-FR',
                 ],
             ]);
-
         } else {
             $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search?query=kazzey&type=track&locale=fr-FR', [
                 'headers' => [
@@ -65,6 +68,7 @@ class TrackController extends AbstractController
         return $this->render('track/index.html.twig', [
             'tracks' => $tracks,
             'form' => $form->createView(),
+            'is_submitted' => $isSubmitted,
         ]);
     }
 
@@ -75,9 +79,26 @@ class TrackController extends AbstractController
      * @throws DecodingExceptionInterface
      * @throws ClientExceptionInterface
      */
-    #[Route('/tracks/{id}', name: 'app_track_info')]
-    public function show(string $id): Response
+    #[Route('/track/{id}', name: 'app_track_info')]
+    public function show(Request $request, ?string $id): Response
     {
+
+        if ($request->query->get('recommendations')) {
+            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/recommendations', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+                'query' => [
+                    'seed_tracks' => '2K5cF4TM3vH1eaX0eqXfzZ', //need to change by recommendation for the account
+                ],
+            ]);
+            $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
+            return $this->render('recommendation/recommendation.html.twig', [
+                'recommendations' => $recommendations,
+            ]);
+        }
+
+
         $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $id, [
             'headers' => [
                 'Authorization' => 'Bearer ' . $this->token,
@@ -100,5 +121,4 @@ class TrackController extends AbstractController
             'recommendations' => $recommendations,
         ]);
     }
-
 }
