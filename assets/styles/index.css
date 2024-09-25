@@ -1,0 +1,31 @@
+.no-link {
+  text-decoration: none;
+  color: inherit;
+}
+
+.spotify-green {
+  background-color: #1DB954 !important;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 250px; /* Adjust the width as needed */
+  z-index: 1000; /* Ensure it is above other content */
+}
+
+.empty-space {
+  width: 250px; /* Match the width of the sidebar */
+  height: 100%;
+}
+
+.main-content {
+  margin-left: 250px; /* Match the width of the sidebar */
+}
+
+.btn-primary {
+  background-color: #1DB954 !important;
+  border-color: #1DB954 !important;
+}

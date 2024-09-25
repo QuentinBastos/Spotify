@@ -2,22 +2,55 @@
 
 namespace App\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
+#[ORM\Entity]
+#[ORM\Table(name: 'track')]
 class Track
 {
+    #[ORM\Column(type: 'integer', length: 255)]
     private int $discNumber;
+
+    #[ORM\Column(type: 'integer', length: 255)]
     private int $durationMs;
-    private bool $explicit;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $explicit;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $isrc;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $spotifyUrl;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $href;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $id;
-    private bool $isLocal;
+
+    #[ORM\Column(type: 'boolean', nullable: true)]
+    private ?bool $isLocal;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $name;
+
+    #[ORM\Column(type: 'integer', length: 255)]
     private int $popularity;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $previewUrl;
+
+    #[ORM\Column(type: 'integer', length: 255)]
     private int $trackNumber;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $type;
+
+    #[ORM\Column(type: 'string', length: 255)]
     private string $uri;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private ?string $pictureLink;
 
     public function __construct(

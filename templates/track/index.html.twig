@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<div class="container">
+    <div class="text-center">
+        <img class="d-block mx-auto" src="{{ asset('img/spotify_logo.webp') }}" alt="" width="250" height="200">
+        <h2>{{ "index.search"|trans }}</h2>
+        <p class="lead">{{ "index.description"|trans }}</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-12">
+            {{ form_start(form, {'attr': {'class': 'd-flex align-items-end gap-3 w-100'}}) }}
+            {{ form_row(form.search) }}
+            {{ form_row(form.save) }}
+            {{ form_end(form) }}
+        </div>
+        {% if tracks is defined and tracks is not null %}
+            {% for track in tracks %}
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100">
+                        <img src="{{ track.pictureLink }}" class="card-img-top" alt="{{ track.name }}">
+                        <div class="card-body">
+                            <p class="card-text">{{ track.name }}</p>
+                            <a href="{{ path('app_track_info', {'id': track.id}) }}" class="btn btn-primary">Go somewhere</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            {% else %}
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
