@@ -3,17 +3,50 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
+    <div class="form-width m-auto">
+        {{ form_errors(registrationForm) }}
 
-    {{ form_errors(registrationForm) }}
-
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+        {{ form_start(registrationForm) }}
+        <img src="{{ asset('img/spotify_logo.webp') }}" alt="" width="330" height="280">
+        <h1 class="h3 mb-3 fw-normal">{{ "register.register"|trans }}</h1>
+        <div class="mb-3">
+            {{ form_row(registrationForm.email, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'name@example.com',
+                    'id': 'floatingInput'
+                },
+                'label_attr': {
+                    'for': 'floatingInput'
+                }
+            }) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(registrationForm.plainPassword, {
+                'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Password',
+                    'id': 'floatingPassword'
+                },
+                'label_attr': {
+                    'for': 'floatingPassword'
+                }
+            }) }}
+        </div>
+        <div class="mb-3">
+            {{ form_row(registrationForm.agreeTerms, {
+                'attr': {
+                    'class': 'form-check-input ms-2',
+                    'id': 'flexCheckDefault'
+                },
+                'label_attr': {
+                    'class': 'form-check-label',
+                    'for': 'flexCheckDefault'
+                }
+            }) }}
+        </div>
+        <a href="{{ path('app_login') }}" class="d-block text-center mt-2 mb-2 small link-sidebar">{{ "register.already_have_an_account"|trans }}</a>
+        <button type="submit" class="btn btn-primary w-100 py-2">{{ "button.register"|trans }}</button>
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}

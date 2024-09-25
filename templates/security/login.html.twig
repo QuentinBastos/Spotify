@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Log in!{% endblock %}
+
+{% block body %}
+    <div class="form-width m-auto">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
+
+        <img src="{{ asset('img/spotify_logo.webp') }}" alt="" width="330" height="280">
+        <h1 class="h3 mb-3 fw-normal">{{ "login.login"|trans }}</h1>
+
+        <form method="post">
+            <div class="mb-3">
+                <div class="d-flex flex-column-reverse">
+                    <input type="email" value="{{ last_username }}" name="_username" id="floatingInput" class="form-control" placeholder="name@example.com" autocomplete="email" required autofocus>
+                    <label for="floatingInput">{{ "login.email"|trans }}</label>
+                </div>
+            </div>
+            <div class="mb-3">
+                <div class="d-flex flex-column-reverse">
+                    <input type="password" name="_password" id="floatingPassword" class="form-control" placeholder="Password" autocomplete="current-password" required>
+                    <label for="floatingPassword">{{ "login.password"|trans }}</label>
+                </div>
+            </div>
+            <div class="form-check text-start my-3">
+                <input class="form-check-input me-2" type="checkbox" value="remember-me" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    {{ "login.remember_me"|trans }}
+                </label>
+            </div>
+            <a href="{{ path('app_register') }}" class="d-block text-center mt-2 small link-sidebar mb-2">{{ "login.dont_have_an_account"|trans }}</a>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+            <button class="btn btn-primary w-100 py-2" type="submit">{{ "button.sign_in"|trans }}</button>
+        </form>
+    </div>
+{% endblock %}

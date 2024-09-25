@@ -1,5 +1,7 @@
 button:
   see: Voir
+  register: S'inscrire
+  sign_in: Se connecter
 
 track:
   welcome: Bienvenue sur la recherche de musique
@@ -27,8 +29,6 @@ recommended:
   description: Ici une petite description des titres recommandés
   info: Voir
 
-
-
 error:
   not_support: Désolé, votre navigateur ne supporte pas l'audio HTML5
 
@@ -52,3 +52,17 @@ search:
     label: Recherche de musique
     placeholder: Rechercher une musique
     button: Rechercher
+
+register:
+  register: Merci de vous inscrire
+  terms: J'accèpte les conditions d'utilisation
+  email: Adresse e-mail
+  password: Mot de passe
+  already_have_an_account: Vous avez déjà un compte ?
+
+login:
+  login: Merci de vous connecter
+  email: Adresse e-mail
+  password: Mot de passe
+  remember_me: Se souvenir de moi
+  dont_have_an_account: Vous n'avez pas de compte ?

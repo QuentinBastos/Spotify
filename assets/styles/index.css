@@ -30,6 +30,11 @@
   border-color: #1DB954 !important;
 }
 
+.btn-primary:hover {
+  background-color: #1ed760 !important;
+  border-color: #1ed760 !important;
+}
+
 .link-sidebar {
     color: #FFFFFF !important;
     text-decoration: none !important;
@@ -37,4 +42,8 @@
 
 .link-sidebar:hover {
     color: #1DB954 !important;
+}
+
+.form-width {
+  max-width: 330px;
 }
