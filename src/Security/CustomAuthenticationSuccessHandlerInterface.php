@@ -8,9 +8,9 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
 
-class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterface
+class CustomAuthenticationSuccessHandlerInterface implements AuthenticationSuccessHandlerInterface
 {
-    private $router;
+    private RouterInterface $router;
 
     public function __construct(RouterInterface $router)
     {
