@@ -6,4 +6,6 @@
  */
 import './styles/app.css';
 import './styles/index.css';
+import './js/flash.js';
+import './js/favorite.js';
 

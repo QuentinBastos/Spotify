@@ -1,42 +1,46 @@
 <div class="container-fluid">
-        <div class="col-auto px-0">
-            <div class="sidebar bg-darks">
-                <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white h-100">
+    <div class="col-auto px-0">
+        <div class="sidebar bg-darks">
+            <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white h-100">
                 <a href="/" class="d-flex align-items-center pb-3 mb-md-0 me-md-auto text-white text-decoration-none">
                     <span class="fs-5 d-none d-sm-inline">Spotify Project</span>
                 </a>
                 <ul class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu">
                     <li class="nav-item">
                         <a href="{{ path('app_artist') }}" class="nav-link link-sidebar align-middle px-0">
-                            <i class="fa-solid fa-user pe-2"></i><span class="ms-1 d-none d-sm-inline">{{ "sidebar.artist"|trans }}</span>
+                            <i class="fa-solid fa-user pe-2"></i><span
+                                    class="ms-1 d-none d-sm-inline">{{ "sidebar.artist"|trans }}</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="{{ path('app_tracks') }}" class="nav-link link-sidebar align-middle px-0">
-                            <i class="fa-solid fa-music pe-2"></i><span class="ms-1 d-none d-sm-inline">{{ "sidebar.music"|trans }}</span>
+                            <i class="fa-solid fa-music pe-2"></i><span
+                                    class="ms-1 d-none d-sm-inline">{{ "sidebar.music"|trans }}</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <!-- for recommendation, do after a recommendation by using the app.user.id and not a id static of a song -->
-                        <a href="{{ path('app_track_info', { id: 0, recommendations: true }) }}" class="nav-link link-sidebar align-middle px-0">
-                            <i class="fa-solid fa-user pe-2"></i><span class="ms-1 d-none d-sm-inline">{{ "sidebar.recommended"|trans }}</span>
+                        <a href="{{ path('app_track_info', { id: 0, recommendations: true }) }}"
+                           class="nav-link link-sidebar align-middle px-0">
+                            <i class="fa-solid fa-user pe-2"></i><span
+                                    class="ms-1 d-none d-sm-inline">{{ "sidebar.recommended"|trans }}</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link link-sidebar align-middle px-0">
-                            <i class="fa-solid fa-user pe-2"></i><span class="ms-1 d-none d-sm-inline">...</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link link-sidebar align-middle px-0">
-                            <i class="fa-solid fa-user pe-2"></i><span class="ms-1 d-none d-sm-inline">...</span>
-                        </a>
-                    </li>
+                    {% if app.user %}
+                        <li class="nav-item">
+                            <a href="{{ path('app_favorite_show') }}" class="nav-link link-sidebar align-middle px-0">
+                                <i class="fa-solid fa-star pe-2"></i><span
+                                        class="ms-1 d-none d-sm-inline">{{ "sidebar.favorite"|trans }}</span>
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
                 <hr>
                 <div class="dropdown pb-4">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30" class="rounded-circle">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                       id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://github.com/mdo.png" alt="hugenerd" width="30" height="30"
+                             class="rounded-circle">
                         <span class="d-none d-sm-inline mx-1"> {% if app.user %}{{ app.user.email }}{% else %}{{ "button.no_connected"|trans }}{% endif %}</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
@@ -46,9 +50,9 @@
                             <hr class="dropdown-divider">
                         </li>
                         {% if app.user %}
-                        <li><a class="dropdown-item" href="{{ path('app_logout') }}">Sign out</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_logout') }}">Sign out</a></li>
                         {% else %}
-                        <li><a class="dropdown-item" href="{{ path('app_login') }}">Sign in / Register</a></li>
+                            <li><a class="dropdown-item" href="{{ path('app_login') }}">Sign in / Register</a></li>
                         {% endif %}
                     </ul>
                 </div>
@@ -57,6 +61,18 @@
         <div class="col">
             <div class="empty-space"></div>
             <div class="main-content">
+                <div class="container mt-4">
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
                 {{ body_content|raw }}
             </div>
         </div>

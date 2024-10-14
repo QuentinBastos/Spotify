@@ -3,6 +3,7 @@ button:
   register: S'inscrire
   sign_in: Se connecter
   no_connected: Non connecté
+  favorite: Ajouter aux favoris
 
 track:
   welcome: Bienvenue sur la recherche de musique
@@ -43,6 +44,7 @@ sidebar:
   login: Connexion
   register: Inscription
   settings: Paramètres
+  favorite: Vos favoris
 
 search:
   artist:
@@ -67,3 +69,7 @@ login:
   password: Mot de passe
   remember_me: Se souvenir de moi
   dont_have_an_account: Vous n'avez pas de compte ?
+
+favorite:
+  add: Ajouter aux favoris
+  remove: Retirer des favoris

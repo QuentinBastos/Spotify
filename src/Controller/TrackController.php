@@ -19,15 +19,13 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class TrackController extends AbstractController
 {
     private string $token;
-    public TrackFactory $trackFactory;
 
     public function __construct(
         private readonly AuthSpotifyService $authSpotifyService,
         private readonly HttpClientInterface $httpClient,
-        TrackFactory $trackFactory
+        private readonly TrackFactory $trackFactory
     ) {
         $this->token = $this->authSpotifyService->auth();
-        $this->trackFactory = $trackFactory;
     }
 
     /**

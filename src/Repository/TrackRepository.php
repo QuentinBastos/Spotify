@@ -2,9 +2,14 @@
 
 namespace App\Repository;
 
-use Doctrine\ORM\EntityRepository;
+use App\Entity\Track;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Persistence\ManagerRegistry;
 
-class TrackRepository extends EntityRepository
+class TrackRepository extends ServiceEntityRepository
 {
-    // Add your custom methods here
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, Track::class);
+    }
 }
