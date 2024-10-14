@@ -9,10 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'favorite')]
 class Favorite
 {
-
-    const TYPE_SONG = 'song';
-    const TYPE_ARTIST = 'artist';
-
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -27,7 +23,8 @@ class Favorite
     private ?Track $track = null;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private string $type;
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Artist $artist = null;
 
     public function getId(): int
     {
@@ -59,13 +56,13 @@ class Favorite
         $this->track = $track;
     }
 
-    public function getType(): string
+    public function getArtist(): ?Artist
     {
-        return $this->type;
+        return $this->artist;
     }
 
-    public function setType(string $type): void
+    public function setArtist(?Artist $artist): void
     {
-        $this->type = $type;
+        $this->artist = $artist;
     }
 }

@@ -45,22 +45,33 @@ class FavoriteController extends AbstractController
     public function add(Request $request): JsonResponse
     {
         $trackId = $request->request->get('trackId');
+        $artistId = $request->request->get('artistId');
         $user = $this->getUser();
-        $track = $this->em->getRepository(Track::class)->find($trackId);
+        $entity = $this->em->getRepository(Track::class)->find($trackId);
 
-        if (!$track) {
+        if (!$entity) {
             $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $trackId, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->token,
                 ],
             ]);
-            $track = $this->trackFactory->createFromSpotifyData($response->toArray());
-            $this->em->persist($track);
+            $entity = $this->trackFactory->createFromSpotifyData($response->toArray());
+            $this->em->persist($entity);
+        }
+
+        if (!$artistId) {
+            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $artistId, [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $this->token,
+                ],
+            ]);
+            $artist = $this->trackFactory->createFromSpotifyData($response->toArray());
+            $this->em->persist($artist);
         }
 
         $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
             'user' => $user,
-            'track' => $track,
+            'entity' => $entity,
         ]);
 
         if ($favorite) {
@@ -70,7 +81,7 @@ class FavoriteController extends AbstractController
 
         $favorite = new Favorite();
         $favorite->setUser($user);
-        $favorite->setTrack($track);
+        $favorite->setTrack($entity);
         $this->em->persist($favorite);
         $this->em->flush();
 
@@ -115,6 +126,7 @@ class FavoriteController extends AbstractController
         ]);
         return $this->render('favorite/show_track.html.twig', [
             'favorite_tracks' => $favoriteTracks,
+            'type' => Favorite::TYPE_ARTIST,
         ]);
     }
 
