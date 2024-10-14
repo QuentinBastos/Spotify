@@ -81,8 +81,8 @@ class ArtistController extends AbstractController
 
         $artist = $this->artistFactory->createFromSpotifyData($response->toArray());
 
-        return $this->render('artist/show_track.html.twig', [
-            'artist' => $artist ?? null,
+        return $this->render('artist/show.html.twig', [
+            'artist' => $artist,
         ]);
     }
 

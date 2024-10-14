@@ -1,53 +1,74 @@
 {% extends 'base.html.twig' %}
-
+{% set artist_const = constant('App\\Entity\\Favorite::TYPE_ARTIST') %}
 {% block body %}
-<div class="container">
-    <div class="text-center">
-        <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250" height="220">
-        <h2>{{ "artist.search"|trans }}</h2>
-        <p class="lead">{{ "artist.description"|trans }}</p>
-    </div>
-    <div class="row g-4">
-        <div class="col-12">
-            {{ form_start(form, {'attr': {'class': 'd-flex align-items-end gap-3 w-100'}}) }}
-            {{ form_row(form.search) }}
-            {{ form_row(form.save) }}
-            {{ form_end(form) }}
+    <div class="container">
+        <div class="text-center">
+            <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250"
+                 height="220">
+            <h2>{{ "artist.search"|trans }}</h2>
+            <p class="lead">{{ "artist.description"|trans }}</p>
         </div>
-        {% if artists is defined and artists is not null %}
-            {% for artist in artists %}
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="card h-100">
-                        <!-- put miniature image of artist to upgrade the performance of the website !-->
-                        {% if artist.images[0] is defined and artist.images[0] is not null %}
-                        <img src="{{ artist.images[0].url }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
-                        {% elseif artist.images[1] is defined and artist.images[1] is not null %}
-                        <img src="{{ artist.images[1].url }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
-                        {% elseif artist.images[2] is defined and artist.images[2] is not null %}
-                        <img src="{{ artist.images[2].url }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
-                        {% else %}
-                        <img src="{{ asset('build/img/spotify_logo.webp') }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
-                        {% endif %}
-                        <div class="card-body">
-                            <p class="card-text">{{ artist.name }}</p>
-                            <div class="d-flex align-items-center">
-                                <p class="card-text m-0 me-2">{{ artist.followersTotal|number_format(0, '.', ' ') }}</p>
-                                <i class="fa fa-user"></i>
+        <div class="row g-4">
+            <div class="col-12">
+                {{ form_start(form, {'attr': {'class': 'd-flex align-items-end gap-3 w-100'}}) }}
+                {{ form_row(form.search) }}
+                {{ form_row(form.save) }}
+                {{ form_end(form) }}
+            </div>
+            {% if artists is defined and artists is not null %}
+                {% for artist in artists %}
+                    {% set is_favorite = get_is_favorite(artist.id, artist_const) %}
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card h-100">
+                            <!-- put miniature image of artist to upgrade the performance of the website !-->
+                            {% if artist.images[0] is defined and artist.images[0] is not null %}
+                                <img src="{{ artist.images[0].url }}" class="card-img-top" alt="{{ artist.name }}"
+                                     style="height: 250px;">
+                            {% elseif artist.images[1] is defined and artist.images[1] is not null %}
+                                <img src="{{ artist.images[1].url }}" class="card-img-top" alt="{{ artist.name }}"
+                                     style="height: 250px;">
+                            {% elseif artist.images[2] is defined and artist.images[2] is not null %}
+                                <img src="{{ artist.images[2].url }}" class="card-img-top" alt="{{ artist.name }}"
+                                     style="height: 250px;">
+                            {% else %}
+                                <img src="{{ asset('build/img/spotify_logo.webp') }}" class="card-img-top"
+                                     alt="{{ artist.name }}" style="height: 250px;">
+                            {% endif %}
+                            <div class="card-body">
+                                <p class="card-text">{{ artist.name }}</p>
+                                <div class="d-flex align-items-center">
+                                    <p class="card-text m-0 me-2">{{ artist.followersTotal|number_format(0, '.', ' ') }}</p>
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <a href="{{ path('app_artist_info', {'id': artist.id}) }}"
+                                   class="btn btn-primary mt-3">{{ "button.see"|trans }}</a>
+                                {% if app.user %}
+                                    <a href="#" data-favorite="{{ artist.id }}"
+                                       data-bs-toggle="tooltip"
+                                       data-value="{{ artist_const }}"
+                                            {% if is_favorite == true %}
+                                                data-url="{{ path('app_favorite_remove') }}"
+                                                title="{{ "favorite.remove"|trans }}"
+                                            {% else %}
+                                                data-url="{{ path('app_favorite_add') }}"
+                                                title="{{ "favorite.add"|trans }}"
+                                            {% endif %}
+                                       class="float-end green">
+                                        <i class="{% if is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i></a>
+                                {% endif %}
                             </div>
-                            <a href="{{ path('app_artist_info', {'id': artist.id}) }}" class="btn btn-primary mt-3">{{ "button.see"|trans }}</a>
                         </div>
                     </div>
-                </div>
-            {% endfor %}
-        {% else %}
-            {% if is_submitted is defined and is_submitted == true %}
-                <div class="col-12">
-                    <div class="alert alert-danger" role="alert">
-                        {{ "artist.not_found"|trans }}
+                {% endfor %}
+            {% else %}
+                {% if is_submitted is defined and is_submitted == true %}
+                    <div class="col-12">
+                        <div class="alert alert-danger" role="alert">
+                            {{ "artist.not_found"|trans }}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
             {% endif %}
-        {% endif %}
+        </div>
     </div>
-</div>
 {% endblock %}

@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Artist;
 use App\Entity\Favorite;
 use App\Entity\Track;
+use App\Factory\ArtistFactory;
 use App\Factory\TrackFactory;
 use App\Service\AuthSpotifyService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -28,6 +30,7 @@ class FavoriteController extends AbstractController
         private readonly AuthSpotifyService     $authSpotifyService,
         private readonly HttpClientInterface    $httpClient,
         private readonly TrackFactory           $trackFactory,
+        private readonly ArtistFactory          $artistFactory,
         private readonly EntityManagerInterface $em
     )
     {
@@ -44,34 +47,53 @@ class FavoriteController extends AbstractController
     #[Route('/add', name: 'app_favorite_add')]
     public function add(Request $request): JsonResponse
     {
-        $trackId = $request->request->get('trackId');
-        $artistId = $request->request->get('artistId');
+        $entityId = $request->request->get('entityId');
+        $entityName = $request->request->get('entityName');
+        $track = null;
+        $artist = null;
+
+        if ($entityName === Favorite::TYPE_ARTIST) {
+            $artist = $this->em->getRepository(Artist::class)->find($entityId);
+            if (!$artist) {
+                $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $entityId, [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token,
+                    ],
+                ]);
+
+                if ($response->getStatusCode() === 404) {
+                    return new JsonResponse(['success' => false, 'message' => 'Artist not found.']);
+                }
+
+                $artist = $this->artistFactory->createFromSpotifyData($response->toArray());
+                $this->em->persist($artist);
+            }
+        } elseif ($entityName === Favorite::TYPE_TRACK) {
+            $track = $this->em->getRepository(Track::class)->find($entityId);
+            if (!$track) {
+                $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $entityId, [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->token,
+                    ],
+                ]);
+
+                if ($response->getStatusCode() === 404) {
+                    return new JsonResponse(['success' => false, 'message' => $this->token]);
+                }
+
+                $track = $this->trackFactory->createFromSpotifyData($response->toArray());
+                $this->em->persist($track);
+            }
+        } else {
+            return new JsonResponse(['success' => false, 'message' => 'Invalid entity name.']);
+        }
+
         $user = $this->getUser();
-        $entity = $this->em->getRepository(Track::class)->find($trackId);
-
-        if (!$entity) {
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $trackId, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-            ]);
-            $entity = $this->trackFactory->createFromSpotifyData($response->toArray());
-            $this->em->persist($entity);
-        }
-
-        if (!$artistId) {
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $artistId, [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-            ]);
-            $artist = $this->trackFactory->createFromSpotifyData($response->toArray());
-            $this->em->persist($artist);
-        }
 
         $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
             'user' => $user,
-            'entity' => $entity,
+            'track' => $track ?? null,
+            'artist' => $artist ?? null,
         ]);
 
         if ($favorite) {
@@ -81,7 +103,8 @@ class FavoriteController extends AbstractController
 
         $favorite = new Favorite();
         $favorite->setUser($user);
-        $favorite->setTrack($entity);
+        $favorite->setTrack($track);
+        $favorite->setArtist($artist);
         $this->em->persist($favorite);
         $this->em->flush();
 
@@ -93,17 +116,30 @@ class FavoriteController extends AbstractController
     #[Route('/remove', name: 'app_favorite_remove')]
     public function remove(Request $request): JsonResponse
     {
-        $trackId = $request->request->get('trackId');
+        $entityId = $request->request->get('entityId');
+        $entityName = $request->request->get('entityName');
+        $track = null;
+        $artist = null;
         $user = $this->getUser();
-        $track = $this->em->getRepository(Track::class)->find($trackId);
 
-        if (!$track) {
+        if ($entityName === Favorite::TYPE_ARTIST) {
+            $artist = $this->em->getRepository(Artist::class)->find($entityId);
+            if (!$artist) {
+                return new JsonResponse(['success' => false]);
+            }
+        } elseif ($entityName === Favorite::TYPE_TRACK) {
+            $track = $this->em->getRepository(Track::class)->find($entityId);
+            if (!$track) {
+                return new JsonResponse(['success' => false]);
+            }
+        } else {
             return new JsonResponse(['success' => false]);
         }
 
         $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
             'user' => $user,
-            'track' => $track,
+            'track' => $track ?? null,
+            'artist' => $artist ?? null,
         ]);
 
         if (!$favorite) {
@@ -113,7 +149,7 @@ class FavoriteController extends AbstractController
         $this->em->remove($favorite);
         $this->em->flush();
 
-        $this->addFlash('success', 'Track removed from favorites!');
+        $this->addFlash('success', 'Favorite removed successfully!');
 
         return new JsonResponse(['success' => true]);
     }
@@ -126,7 +162,6 @@ class FavoriteController extends AbstractController
         ]);
         return $this->render('favorite/show_track.html.twig', [
             'favorite_tracks' => $favoriteTracks,
-            'type' => Favorite::TYPE_ARTIST,
         ]);
     }
 
@@ -135,7 +170,6 @@ class FavoriteController extends AbstractController
     {
         $favoriteArtists = $this->em->getRepository(Favorite::class)->findBy([
             'user' => $this->getUser(),
-            'type' => Favorite::TYPE_ARTIST,
         ]);
         return $this->render('favorite/show_artist.html.twig', [
             'favorite_artists' => $favoriteArtists,

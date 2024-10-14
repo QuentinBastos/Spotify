@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-
+{% set track_const = constant('App\\Entity\\Favorite::TYPE_TRACK') %}
 {% block body %}
     <div class="container">
         <div class="text-center">
@@ -11,7 +11,7 @@
         <div class="row g-4">
             {% if favorite_tracks is defined and favorite_tracks is not null %}
                 {% for favorite in favorite_tracks %}
-                    {% set is_favorite = get_is_favorite(favorite.track.id) %}
+                    {% set is_favorite = get_is_favorite(favorite.track.id, track_const) %}
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="card h-100">
                             <img src="{{ favorite.track.pictureLink }}" class="card-img-top"
@@ -23,6 +23,7 @@
                                 {% if app.user %}
                                     <a href="#" data-favorite="{{ favorite.track.id }}"
                                        data-bs-toggle="tooltip"
+                                       data-value="{{ track_const }}"
                                             {% if is_favorite == true %}
                                                 data-url="{{ path('app_favorite_remove') }}"
                                                 title="{{ "favorite.remove"|trans }}"

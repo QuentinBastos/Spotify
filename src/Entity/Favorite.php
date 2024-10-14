@@ -9,20 +9,23 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Table(name: 'favorite')]
 class Favorite
 {
+    const TYPE_TRACK = 'track';
+    const TYPE_ARTIST = 'artist';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
     private int $id;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     #[ORM\ManyToOne(targetEntity: Track::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Track $track = null;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\ManyToOne(targetEntity: Artist::class)]
     #[ORM\JoinColumn(nullable: true)]
     private ?Artist $artist = null;
 

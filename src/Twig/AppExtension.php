@@ -2,6 +2,7 @@
 
 namespace App\Twig;
 
+use App\Entity\Artist;
 use App\Entity\Favorite;
 use App\Entity\Track;
 use App\Entity\User;
@@ -27,17 +28,18 @@ class AppExtension extends AbstractExtension
         ];
     }
 
-    public function isFavorite(string $trackId): bool
+    public function isFavorite(string $entityId, string $entityName): bool
     {
-        $track = $this->em->getRepository(Track::class)->find($trackId);
-        $user = $this->security->getUser();
-        if (!$user instanceof User) {
-            return false;
+        $trackId = $entityName === Favorite::TYPE_TRACK ? $entityId : null;
+        $artistId = $entityName === Favorite::TYPE_ARTIST ? $entityId : null;
+        if ($this->security->getUser() instanceof User) {
+            $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
+                'user' => $this->security->getUser(),
+                'track' => $trackId ? $this->em->getRepository(Track::class)->find($trackId) : null,
+                'artist' => $artistId ? $this->em->getRepository(Artist::class)->find($artistId) : null,
+            ]);
+            return (bool)$favorite;
         }
-        $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
-            'track' => $track,
-            'user' => $user
-        ]);
-        return $favorite !== null;
+        return false;
     }
 }
