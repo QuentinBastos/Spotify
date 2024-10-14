@@ -44,7 +44,9 @@ sidebar:
   login: Connexion
   register: Inscription
   settings: Paramètres
-  favorite: Vos favoris
+  favorite:
+    song: Vos musiques favorites
+    artist: Vos artistes favoris
 
 search:
   artist:
@@ -73,3 +75,9 @@ login:
 favorite:
   add: Ajouter aux favoris
   remove: Retirer des favoris
+  title:
+    song: Voici vos musiques favorites
+    artist: Voici vos artistes favoris
+  description:
+    song: Vous pouvez ajouter ou retirer des musiques de vos favoris
+    artist: Vous pouvez ajouter ou retirer des artistes de vos favoris

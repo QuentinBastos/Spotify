@@ -114,7 +114,7 @@ class TrackController extends AbstractController
         ]);
         $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
 
-        return $this->render('track/show.html.twig', [
+        return $this->render('track/show_track.html.twig', [
             'track' => $track,
             'recommendations' => $recommendations,
         ]);

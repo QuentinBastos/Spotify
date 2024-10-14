@@ -5,8 +5,8 @@
         <div class="text-center">
             <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250"
                  height="220">
-            <h2>{{ "track.search"|trans }}</h2>
-            <p class="lead">{{ "track.description"|trans }}</p>
+            <h2>{{ "favorite.title.artist"|trans }}</h2>
+            <p class="lead">{{ "favorite.description.artist"|trans }}</p>
         </div>
         <div class="row g-4">
             {% if favorite_tracks is defined and favorite_tracks is not null %}

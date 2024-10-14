@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <div class="container">
+        <div class="text-center">
+            <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250"
+                 height="220">
+            <h2>{{ "favorite.title.track"|trans }}</h2>
+            <p class="lead">{{ "track.description.track"|trans }}</p>
+        </div>
+        <div class="row g-4">
+            {% if favorite_tracks is defined and favorite_tracks is not null %}
+                {% for favorite in favorite_tracks %}
+                    {% set is_favorite = get_is_favorite(favorite.track.id) %}
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <div class="card h-100">
+                            <img src="{{ favorite.track.pictureLink }}" class="card-img-top"
+                                 alt="{{ favorite.track.name }}">
+                            <div class="card-body">
+                                <p class="card-text">{{ favorite.track.name }}</p>
+                                <a href="{{ path('app_track_info', {'id': favorite.track.id}) }}"
+                                   class="btn btn-primary">{{ "button.see"|trans }}</a>
+                                {% if app.user %}
+                                    <a href="#" data-favorite="{{ favorite.track.id }}"
+                                       data-bs-toggle="tooltip"
+                                            {% if is_favorite == true %}
+                                                data-url="{{ path('app_favorite_remove') }}"
+                                                title="{{ "favorite.remove"|trans }}"
+                                            {% else %}
+                                                data-url="{{ path('app_favorite_add') }}"
+                                                title="{{ "favorite.add"|trans }}"
+                                            {% endif %}
+                                       class="float-end green">
+                                        <i class="{% if is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i></a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                {% if is_submitted is defined and is_submitted == true %}
+                    <div class="col-12">
+                        <div class="alert alert-danger" role="alert">
+                            {{ "track.not_found"|trans }}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

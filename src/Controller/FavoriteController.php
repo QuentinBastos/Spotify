@@ -107,14 +107,26 @@ class FavoriteController extends AbstractController
         return new JsonResponse(['success' => true]);
     }
 
-    #[Route('/show', name: 'app_favorite_show')]
-    public function show() : Response
+    #[Route('/show-track', name: 'app_favorite_show_track')]
+    public function showTracks(): Response
     {
         $favoriteTracks = $this->em->getRepository(Favorite::class)->findBy([
             'user' => $this->getUser(),
         ]);
-        return $this->render('favorite/show.html.twig', [
+        return $this->render('favorite/show_track.html.twig', [
             'favorite_tracks' => $favoriteTracks,
+        ]);
+    }
+
+    #[Route('/show-artist', name: 'app_favorite_show_artist')]
+    public function showArtist(): Response
+    {
+        $favoriteArtists = $this->em->getRepository(Favorite::class)->findBy([
+            'user' => $this->getUser(),
+            'type' => Favorite::TYPE_ARTIST,
+        ]);
+        return $this->render('favorite/show_artist.html.twig', [
+            'favorite_artists' => $favoriteArtists,
         ]);
     }
 }
