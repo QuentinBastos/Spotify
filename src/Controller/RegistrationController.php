@@ -10,10 +10,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Contracts\Translation\TranslatorInterface;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
+
 
 class RegistrationController extends AbstractController
 {
+
+    public function __construct(
+        private readonly UserAuthenticatorInterface $userAuthenticator,
+        private readonly FormLoginAuthenticator     $formLoginAuthenticator,
+    )
+    {
+    }
+
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, EntityManagerInterface $entityManager): Response
     {
@@ -31,7 +42,16 @@ class RegistrationController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
 
-            // do anything else you need here, like send an email
+            // Authenticate the user
+            try {
+                $this->userAuthenticator->authenticateUser(
+                    $user,
+                    $this->formLoginAuthenticator,
+                    $request
+                );
+            } catch (AuthenticationException $exception) {
+                // Handle authentication failure if needed
+            }
 
             return $this->redirectToRoute('app_tracks');
         }

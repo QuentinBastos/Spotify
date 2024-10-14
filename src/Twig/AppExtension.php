@@ -5,7 +5,6 @@ namespace App\Twig;
 use App\Entity\Artist;
 use App\Entity\Favorite;
 use App\Entity\Track;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Extension\AbstractExtension;
@@ -16,7 +15,7 @@ class AppExtension extends AbstractExtension
 
     public function __construct(
         private readonly EntityManagerInterface $em,
-        private readonly Security $security
+        private readonly Security               $security
     )
     {
     }
@@ -30,15 +29,26 @@ class AppExtension extends AbstractExtension
 
     public function isFavorite(string $entityId, string $entityName): bool
     {
-        $trackId = $entityName === Favorite::TYPE_TRACK ? $entityId : null;
-        $artistId = $entityName === Favorite::TYPE_ARTIST ? $entityId : null;
-        if ($this->security->getUser() instanceof User) {
-            $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
+        if ($entityName === Favorite::TYPE_ARTIST) {
+            $artist = $this->em->getRepository(Artist::class)->find($entityId);
+            $entity = $this->em->getRepository(Favorite::class)->findOneBy([
                 'user' => $this->security->getUser(),
-                'track' => $trackId ? $this->em->getRepository(Track::class)->find($trackId) : null,
-                'artist' => $artistId ? $this->em->getRepository(Artist::class)->find($artistId) : null,
+                'artist' => $artist,
+                'track' => null,
             ]);
-            return (bool)$favorite;
+            if ($entity) {
+                return true;
+            }
+        } elseif ($entityName === Favorite::TYPE_TRACK) {
+            $track = $this->em->getRepository(Track::class)->find($entityId);
+            $entity = $this->em->getRepository(Favorite::class)->findOneBy([
+                'user' => $this->security->getUser(),
+                'track' => $track,
+                'artist' => null,
+            ]);
+            if ($entity) {
+                return true;
+            }
         }
         return false;
     }

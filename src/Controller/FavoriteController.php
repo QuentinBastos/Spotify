@@ -125,15 +125,15 @@ class FavoriteController extends AbstractController
         if ($entityName === Favorite::TYPE_ARTIST) {
             $artist = $this->em->getRepository(Artist::class)->find($entityId);
             if (!$artist) {
-                return new JsonResponse(['success' => false]);
+                return new JsonResponse(['success' => false, 'message' => 'Artist not found.']);
             }
         } elseif ($entityName === Favorite::TYPE_TRACK) {
             $track = $this->em->getRepository(Track::class)->find($entityId);
             if (!$track) {
-                return new JsonResponse(['success' => false]);
+                return new JsonResponse(['success' => false, 'message' => 'Track not found.']);
             }
         } else {
-            return new JsonResponse(['success' => false]);
+            return new JsonResponse(['success' => false, 'message' => 'Invalid entity name.']);
         }
 
         $favorite = $this->em->getRepository(Favorite::class)->findOneBy([
@@ -159,6 +159,7 @@ class FavoriteController extends AbstractController
     {
         $favoriteTracks = $this->em->getRepository(Favorite::class)->findBy([
             'user' => $this->getUser(),
+            'artist' => null,
         ]);
         return $this->render('favorite/show_track.html.twig', [
             'favorite_tracks' => $favoriteTracks,
@@ -170,6 +171,7 @@ class FavoriteController extends AbstractController
     {
         $favoriteArtists = $this->em->getRepository(Favorite::class)->findBy([
             'user' => $this->getUser(),
+            'track' => null,
         ]);
         return $this->render('favorite/show_artist.html.twig', [
             'favorite_artists' => $favoriteArtists,
