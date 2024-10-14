@@ -33,7 +33,7 @@ class TrackController extends AbstractController
     /**
      * @throws TransportExceptionInterface
      */
-    #[Route('/tracks', name: 'app_tracks')]
+    #[Route('/', name: 'app_tracks')]
     public function index(Request $request): Response
     {
         $isSubmitted = false;

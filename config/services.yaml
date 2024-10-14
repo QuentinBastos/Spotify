@@ -26,7 +26,7 @@ services:
             $clientSecret: '%env(SPOTIFY_CLIENT_SECRET)%'
 
 
-    App\Security\CustomAuthenticationSuccessHandler:
+    App\Security\CustomAuthenticationSuccessHandlerInterface:
         arguments:
             $router: '@router'
     # add more service definitions when explicit configuration is needed
