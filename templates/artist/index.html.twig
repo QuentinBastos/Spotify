@@ -3,7 +3,7 @@
 {% block body %}
 <div class="container">
     <div class="text-center">
-        <img class="d-block mx-auto" src="{{ asset('img/spotify_logo.webp') }}" alt="" width="250" height="220">
+        <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250" height="220">
         <h2>{{ "artist.search"|trans }}</h2>
         <p class="lead">{{ "artist.description"|trans }}</p>
     </div>
@@ -26,7 +26,7 @@
                         {% elseif artist.images[2] is defined and artist.images[2] is not null %}
                         <img src="{{ artist.images[2].url }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
                         {% else %}
-                        <img src="{{ asset('img/spotify_logo.webp') }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
+                        <img src="{{ asset('build/img/spotify_logo.webp') }}" class="card-img-top" alt="{{ artist.name }}" style="height: 250px;">
                         {% endif %}
                         <div class="card-body">
                             <p class="card-text">{{ artist.name }}</p>

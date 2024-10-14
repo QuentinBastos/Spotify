@@ -7,7 +7,7 @@
         {{ form_errors(registrationForm) }}
 
         {{ form_start(registrationForm) }}
-        <img src="{{ asset('img/spotify_logo.webp') }}" alt="" width="330" height="280">
+        <img src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="330" height="280">
         <h1 class="h3 mb-3 fw-normal">{{ "register.register"|trans }}</h1>
         <div class="mb-3">
             {{ form_row(registrationForm.email, {

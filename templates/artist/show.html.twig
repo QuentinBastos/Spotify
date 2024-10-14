@@ -11,7 +11,7 @@
             {% elseif artist.images[2] is defined and artist.images[2] is not null %}
                 <img src="{{ artist.images[2].url }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
             {% else %}
-                <img src="{{ asset('img/spotify_logo.webp') }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
+                <img src="{{ asset('build/img/spotify_logo.webp') }}" class="card-img-top w-auto" alt="{{ artist.name }}" style="height: 550px;">
             {% endif %}
         </div>
         <div class="row g-4 py-5 row-cols-1 row-cols-lg-2">

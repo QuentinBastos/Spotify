@@ -3,7 +3,8 @@
 {% block body %}
     <div class="container">
         <div class="text-center">
-            <img class="d-block mx-auto" src="{{ asset('img/spotify_logo.webp') }}" alt="" width="250" height="220">
+            <img class="d-block mx-auto" src="{{ asset('build/img/spotify_logo.webp') }}" alt="" width="250"
+                 height="220">
             <h2>{{ "recommended.welcome"|trans }}</h2>
             <p class="lead">{{ "recommended.description"|trans }}</p>
         </div>
@@ -29,8 +30,9 @@
                                                 data-url="{{ path('app_favorite_add') }}"
                                                 title="{{ "favorite.add"|trans }}"
                                             {% endif %}
-                                       class="float-end green"><i
-                                                class="{% if is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i></a>
+                                       class="float-end green">
+                                        <i class="{% if is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i>
+                                    </a>
                                 {% endif %}
                             </div>
                         </div>
