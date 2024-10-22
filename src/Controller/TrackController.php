@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Factory\TrackFactory;
 use App\Form\SearchType;
-use App\Service\AuthSpotifyService;
+use App\Service\SpotifyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,18 +14,24 @@ use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class TrackController extends AbstractController
 {
     private string $token;
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     public function __construct(
-        private readonly AuthSpotifyService $authSpotifyService,
-        private readonly TrackFactory       $trackFactory
+        private readonly SpotifyService $spotifyService,
+        private readonly TrackFactory   $trackFactory
     )
     {
-        $this->token = $this->authSpotifyService->auth();
+        $this->token = $this->spotifyService->auth();
     }
 
     /**
@@ -44,14 +50,17 @@ class TrackController extends AbstractController
             $isSubmitted = true;
             $searchQuery = $form->get('search')->getData();
 
-            $response = $this->authSpotifyService->getTrack($searchQuery, $this->token);
+            $response = $this->spotifyService->getTrack($searchQuery, $this->token);
         } else {
-            $response = $this->authSpotifyService->getTrackSearchRandom($this->token);
+            $response = $this->spotifyService->getTrackSearchRandom($this->token);
         }
-        $tracks = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']['items']);
+        try {
+            $tracks = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']['items']);
+        } catch (ClientExceptionInterface|DecodingExceptionInterface|RedirectionExceptionInterface|ServerExceptionInterface|TransportExceptionInterface $e) {
+        }
 
         return $this->render('track/index.html.twig', [
-            'tracks' => $tracks,
+            'tracks' => $tracks ?? null,
             'form' => $form->createView(),
             'is_submitted' => $isSubmitted,
         ]);
@@ -69,7 +78,7 @@ class TrackController extends AbstractController
     {
 
         if ($request->query->get('recommendations')) {
-            $response = $this->authSpotifyService->getTrackByRecommendations($this->token);
+            $response = $this->spotifyService->getTrackByRecommendations($this->token);
             $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
             return $this->render('recommendation/recommendation.html.twig', [
                 'recommendations' => $recommendations,
@@ -77,10 +86,10 @@ class TrackController extends AbstractController
         }
 
 
-        $response = $this->authSpotifyService->getTrackById($id, $this->token);
+        $response = $this->spotifyService->getTrackById($id, $this->token);
         $track = $this->trackFactory->createFromSpotifyData($response->toArray());
 
-        $response = $this->authSpotifyService->getTrackByRecommendations($this->token, $id);
+        $response = $this->spotifyService->getTrackByRecommendations($this->token, $id);
         $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
 
         return $this->render('track/show.html.twig', [

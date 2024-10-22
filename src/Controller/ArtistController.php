@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Factory\ArtistFactory;
 use App\Form\SearchType;
-use App\Service\AuthSpotifyService;
+use App\Service\SpotifyService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,11 +29,11 @@ class ArtistController extends AbstractController
      * @throws ClientExceptionInterface
      */
     public function __construct(
-        private readonly AuthSpotifyService $authSpotifyService,
-        ArtistFactory                       $artistFactory
+        private readonly SpotifyService $spotifyService,
+        ArtistFactory                   $artistFactory
     )
     {
-        $this->token = $this->authSpotifyService->auth();
+        $this->token = $this->spotifyService->auth();
         $this->artistFactory = $artistFactory;
     }
 
@@ -51,7 +51,7 @@ class ArtistController extends AbstractController
             $isSubmitted = true;
             $searchQuery = $form->get('search')->getData();
 
-            $response = $this->authSpotifyService->getArtist($searchQuery, $this->token);
+            $response = $this->spotifyService->getArtist($searchQuery, $this->token);
             $artists = $this->artistFactory->createMultipleFromSpotifyData($response->toArray()['artists']['items']);
         }
         return $this->render('artist/index.html.twig', [
@@ -71,7 +71,7 @@ class ArtistController extends AbstractController
     #[Route('/artist/{id}', name: 'app_artist_info')]
     public function show(string $id): Response
     {
-        $response = $this->authSpotifyService->getArtistById($id, $this->token);
+        $response = $this->spotifyService->getArtistById($id, $this->token);
 
         $artist = $this->artistFactory->createFromSpotifyData($response->toArray());
 

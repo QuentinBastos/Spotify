@@ -7,7 +7,7 @@ use App\Entity\Favorite;
 use App\Entity\Track;
 use App\Factory\ArtistFactory;
 use App\Factory\TrackFactory;
-use App\Service\AuthSpotifyService;
+use App\Service\SpotifyService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,15 +26,21 @@ class FavoriteController extends AbstractController
 {
     private string $token;
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     public function __construct(
-        private readonly AuthSpotifyService     $authSpotifyService,
-        private readonly HttpClientInterface    $httpClient,
+        private readonly SpotifyService         $spotifyService,
         private readonly TrackFactory           $trackFactory,
         private readonly ArtistFactory          $artistFactory,
         private readonly EntityManagerInterface $em
     )
     {
-        $this->token = $this->authSpotifyService->auth();
+        $this->token = $this->spotifyService->auth();
     }
 
     /**
@@ -55,11 +61,7 @@ class FavoriteController extends AbstractController
         if ($entityName === Favorite::TYPE_ARTIST) {
             $artist = $this->em->getRepository(Artist::class)->find($entityId);
             if (!$artist) {
-                $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $entityId, [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->token,
-                    ],
-                ]);
+                $response = $this->spotifyService->getArtistById($entityId, $this->token);
 
                 if ($response->getStatusCode() === 404) {
                     return new JsonResponse(['success' => false, 'message' => 'Artist not found.']);
@@ -71,12 +73,7 @@ class FavoriteController extends AbstractController
         } elseif ($entityName === Favorite::TYPE_TRACK) {
             $track = $this->em->getRepository(Track::class)->find($entityId);
             if (!$track) {
-                $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $entityId, [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $this->token,
-                    ],
-                ]);
-
+                $response = $this->spotifyService->getTrackById($entityId, $this->token);
                 if ($response->getStatusCode() === 404) {
                     return new JsonResponse(['success' => false, 'message' => $this->token]);
                 }

@@ -20,7 +20,7 @@ services:
             - '../src/Entity/'
             - '../src/Kernel.php'
 
-    App\Service\AuthSpotifyService:
+    App\Service\SpotifyService:
         arguments:
             $clientId: '%env(SPOTIFY_CLIENT_ID)%'
             $clientSecret: '%env(SPOTIFY_CLIENT_SECRET)%'
