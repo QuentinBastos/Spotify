@@ -21,10 +21,16 @@ class ArtistController extends AbstractController
     private string $token;
     public ArtistFactory $artistFactory;
 
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     public function __construct(
-        private readonly AuthSpotifyService  $authSpotifyService,
-        private readonly HttpClientInterface $httpClient,
-        ArtistFactory                        $artistFactory
+        private readonly AuthSpotifyService $authSpotifyService,
+        ArtistFactory                       $artistFactory
     )
     {
         $this->token = $this->authSpotifyService->auth();
@@ -45,16 +51,7 @@ class ArtistController extends AbstractController
             $isSubmitted = true;
             $searchQuery = $form->get('search')->getData();
 
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-                'query' => [
-                    'q' => $searchQuery,
-                    'type' => 'artist',
-                    'locale' => 'fr-FR',
-                ],
-            ]);
+            $response = $this->authSpotifyService->getArtist($searchQuery, $this->token);
             $artists = $this->artistFactory->createMultipleFromSpotifyData($response->toArray()['artists']['items']);
         }
         return $this->render('artist/index.html.twig', [
@@ -74,11 +71,7 @@ class ArtistController extends AbstractController
     #[Route('/artist/{id}', name: 'app_artist_info')]
     public function show(string $id): Response
     {
-        $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $id, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-            ],
-        ]);
+        $response = $this->authSpotifyService->getArtistById($id, $this->token);
 
         $artist = $this->artistFactory->createFromSpotifyData($response->toArray());
 

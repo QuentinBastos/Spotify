@@ -10,6 +10,7 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class AuthSpotifyService
 {
@@ -61,5 +62,90 @@ class AuthSpotifyService
         } else {
             return $session->get('token');
         }
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getArtist(string $searchQuery, string $token): ResponseInterface
+    {
+        return $this->httpClient->request('GET', 'https://api.spotify.com/v1/search', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'query' => [
+                'q' => $searchQuery,
+                'type' => 'artist',
+                'locale' => 'fr-FR',
+            ],
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getArtistById(string $id, string $token): ResponseInterface
+    {
+        return $this->httpClient->request('GET', 'https://api.spotify.com/v1/artists/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getTrack(string $searchQuery, string $token): ResponseInterface
+    {
+        return $this->httpClient->request('GET', 'https://api.spotify.com/v1/search', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'query' => [
+                'q' => $searchQuery,
+                'type' => 'track',
+                'locale' => 'fr-FR',
+            ],
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getTrackSearchRandom(string $token): ResponseInterface
+    {
+        return $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search?query=kazzey&type=track&locale=fr-FR', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getTrackByRecommendations(string $token, string $id = '2K5cF4TM3vH1eaX0eqXfzZ'): ResponseInterface
+    {
+        return $this->httpClient->request('GET', 'https://api.spotify.com/v1/recommendations', [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+            'query' => [
+                'seed_tracks' => $id,
+            ],
+        ]);
+    }
+
+    /**
+     * @throws TransportExceptionInterface
+     */
+    public function getTrackById(string $id, string $token): ResponseInterface
+    {
+        return $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $id, [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $token,
+            ],
+        ]);
     }
 }

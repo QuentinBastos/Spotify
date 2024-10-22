@@ -22,9 +22,9 @@ class TrackController extends AbstractController
 
     public function __construct(
         private readonly AuthSpotifyService $authSpotifyService,
-        private readonly HttpClientInterface $httpClient,
-        private readonly TrackFactory $trackFactory
-    ) {
+        private readonly TrackFactory       $trackFactory
+    )
+    {
         $this->token = $this->authSpotifyService->auth();
     }
 
@@ -44,22 +44,9 @@ class TrackController extends AbstractController
             $isSubmitted = true;
             $searchQuery = $form->get('search')->getData();
 
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-                'query' => [
-                    'q' => $searchQuery,
-                    'type' => 'track',
-                    'locale' => 'fr-FR',
-                ],
-            ]);
+            $response = $this->authSpotifyService->getTrack($searchQuery, $this->token);
         } else {
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/search?query=kazzey&type=track&locale=fr-FR', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-            ]);
+            $response = $this->authSpotifyService->getTrackSearchRandom($this->token);
         }
         $tracks = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']['items']);
 
@@ -82,14 +69,7 @@ class TrackController extends AbstractController
     {
 
         if ($request->query->get('recommendations')) {
-            $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/recommendations', [
-                'headers' => [
-                    'Authorization' => 'Bearer ' . $this->token,
-                ],
-                'query' => [
-                    'seed_tracks' => '2K5cF4TM3vH1eaX0eqXfzZ', //need to change by recommendation for the account
-                ],
-            ]);
+            $response = $this->authSpotifyService->getTrackByRecommendations($this->token);
             $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
             return $this->render('recommendation/recommendation.html.twig', [
                 'recommendations' => $recommendations,
@@ -97,21 +77,10 @@ class TrackController extends AbstractController
         }
 
 
-        $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/tracks/' . $id, [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-            ],
-        ]);
+        $response = $this->authSpotifyService->getTrackById($id, $this->token);
         $track = $this->trackFactory->createFromSpotifyData($response->toArray());
 
-        $response = $this->httpClient->request('GET', 'https://api.spotify.com/v1/recommendations', [
-            'headers' => [
-                'Authorization' => 'Bearer ' . $this->token,
-            ],
-            'query' => [
-                'seed_tracks' => $id,
-            ],
-        ]);
+        $response = $this->authSpotifyService->getTrackByRecommendations($this->token, $id);
         $recommendations = $this->trackFactory->createMultipleFromSpotifyData($response->toArray()['tracks']);
 
         return $this->render('track/show.html.twig', [
