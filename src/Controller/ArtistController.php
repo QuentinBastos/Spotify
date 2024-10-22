@@ -22,10 +22,11 @@ class ArtistController extends AbstractController
     public ArtistFactory $artistFactory;
 
     public function __construct(
-        private readonly AuthSpotifyService $authSpotifyService,
+        private readonly AuthSpotifyService  $authSpotifyService,
         private readonly HttpClientInterface $httpClient,
-        ArtistFactory $artistFactory
-    ) {
+        ArtistFactory                        $artistFactory
+    )
+    {
         $this->token = $this->authSpotifyService->auth();
         $this->artistFactory = $artistFactory;
     }
