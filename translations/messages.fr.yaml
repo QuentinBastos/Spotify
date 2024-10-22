@@ -25,6 +25,7 @@ artist:
   follow_by: Suivi par %count% personnes
   popularity: Popularité de l'artiste
   type: Type de musique
+  search_an_artist: Rechercher un artiste pour avoir des résultats
 
 recommended:
   welcome: Bienvenue sur les titres recommandés

@@ -67,6 +67,12 @@
                             {{ "artist.not_found"|trans }}
                         </div>
                     </div>
+                {% else %}
+                    <div class="col-12">
+                        <div class="alert alert-info" role="alert">
+                            {{ "artist.search_an_artist"|trans }}
+                        </div>
+                    </div>
                 {% endif %}
             {% endif %}
         </div>
