@@ -17,7 +17,6 @@
             </div>
             {% if tracks is defined and tracks is not null %}
                 {% for track in tracks %}
-                    {% set is_favorite = get_is_favorite(track.id, track_const) %}
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="card h-100">
                             <img src="{{ track.pictureLink }}" class="card-img-top" alt="{{ track.name }}">
@@ -29,7 +28,7 @@
                                     <a href="#" data-favorite="{{ track.id }}"
                                        data-bs-toggle="tooltip"
                                        data-value="{{ track_const }}"
-                                            {% if is_favorite == true %}
+                                            {% if is_favorite is defined and is_favorite == true %}
                                                 data-url="{{ path('app_favorite_remove') }}"
                                                 title="{{ "favorite.remove"|trans }}"
                                             {% else %}
@@ -37,7 +36,7 @@
                                                 title="{{ "favorite.add"|trans }}"
                                             {% endif %}
                                        class="float-end green"><i
-                                                class="{% if is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i></a>
+                                                class="{% if is_favorite is defined and is_favorite == true %}fa-solid{% else %} fa-regular{% endif %} fa-star"></i></a>
                                 {% endif %}
                             </div>
                         </div>
